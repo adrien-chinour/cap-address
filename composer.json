@@ -1,0 +1,31 @@
+{
+    "name": "adrien-chinour/cap-address",
+    "description": "CapAdress",
+    "version": "0.1.8",
+    "type": "library",
+    "license": "MIT",
+    "homepage": "https://github.com/adrien-chinour/cap-address",
+    "keywords": [
+        "swagger",
+        "php",
+        "sdk",
+        "api",
+        "adrien-chinour"
+    ],
+    "authors": [
+        {
+            "name": "Adrien Chinour",
+            "email": "achinour@pm.me"
+        }
+    ],
+    "require": {
+        "php": ">=5.5",
+        "ext-curl": "*",
+        "ext-json": "*",
+        "ext-mbstring": "*",
+        "guzzlehttp/guzzle": "^6.2"
+    },
+    "autoload": {
+        "psr-0": { "CapAddress\\" : "src/" }
+    }
+}

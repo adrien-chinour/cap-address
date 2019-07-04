@@ -1,0 +1,729 @@
+swagger: "2.0"
+info:
+  title: "CAP ADDRESS"
+  description: "CAP ADDRESS permet, en temps réel, d'assister l'utilisateur lors de la saisie d'une adresse et de s'assurer de la validité de cette dernière avant de la stocker en base de données. Ainsi que de vérifier l'intégralité d'une adresse, en temps réel, lors de la validation."
+  version: "1.0.0"
+  contact:
+    email: "support@capadresse.com"
+host: "dev.capadresse.com"
+schemes:
+  - "http"
+  - "https"
+paths:
+  /SearchAddress:
+    get:
+      summary: "Aide à la saisie d'adresses en temps réel"
+      description: "Chaque caractère saisi engendre un appel à la fonction « SearchAddress » avec la variable « step » initialisée à l'étape correspondante à la recherche."
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "request"
+        in: "query"
+        required: true
+        type: "string"
+        enum:
+          - "SearchAddress"
+        default: "SearchAddress"
+      - name: "inputOutput"
+        in: "query"
+        type: "string"
+        description : "Chaîne de caractères saisie par l'utilisateur."
+      - name: "step"
+        in: "query"
+        type: "string"
+        required: true
+        description : "L'étape correspondante à la recherche."
+        enum:
+          - "Undefined"
+          - "SearchLocality"
+          - "SearchStreet"
+          - "SearchStreetNumber"
+          - "CheckStreetNumber"
+          - "SearchBuilding"
+          - "SearchLocalityB2B"
+          - "SearchLocalityID"
+          - "SearchCompany"
+          - "SearchNumberRange"
+          - "SearchAdditionalInfo"
+          - "CheckChangeOfAddress"
+          - "ValidateForm"
+          - "FinalAddress"
+          - "Forced"
+          - "SearchLocalitySynonym"
+      - name: "countryCode"
+        in: "query"
+        required: true
+        type: "string"
+        default: "FRA"
+        description : "Chaîne de caractères représentant le code ISO 3166-1 alpha-3 sur trois caractères du pays pour lequel faire la recherche."
+      - name: "languageCode"
+        in: "query"
+        required: true
+        type: "string"
+        default: "fr"
+        description : "Chaîne de caractères représentant le code ISO 639-1 identifiant la langue dans laquelle renvoyer les propositions."
+      - name: "qualityCode"
+        type: "string"
+        in: "query"
+        description: "Code qualité adresse, élément récupéré lors de l'étape de recherche précédente via le tableau de sortie adresses."
+      - name: "localitySynonym"
+        in: "query"
+        type: "string"
+        description: "Lieu dit postal ou INSEE, élément récupéré lors de l'étape de recherche précédente via le tableau de sortie adresses."
+      - name: "localityId"
+        in: "query"
+        type: "string"
+        description: "Identifiant de localité (Code INSEE), élément récupéré lors de l'étape de recherche précédente via le tableau de sortie adresses."
+      - name: "locality"
+        in: "query"
+        type: "string"
+        description: "Localité, élément récupéré lors de l'étape de recherche précédente via le tableau de sortie adresses."
+      - name: "postalCode"
+        in: "query"
+        type: "string"
+        description: "Code Postal, élément récupéré lors de l'étape de recherche précédente via le tableau de sortie adresses."
+      - name: "localityFlags"
+        in: "query"
+        type: "integer"
+        format: "int32"
+        description: "Type de couple Code Postal Localité, élément récupéré lors de l'étape de recherche précédente via le tableau de sortie adresses."
+      - name: "streetId"
+        type: "string"
+        in: "query"
+        description: "Identifiant de voie (Matricule HEXAVIA), élément récupéré lors de l'étape de recherche précédente via le tableau de sortie adresses."
+      - name: "streetName"
+        in: "query"
+        type: "string"
+        description: "Ligne 4 postale (voie), élément récupéré lors de l'étape de recherche précédente via le tableau de sortie adresses."
+      - name: "streetFlags"
+        in: "query"
+        type: "integer"
+        format: "int32"
+        description: "Type de synonyme de voie, élément récupéré lors de l'étape de recherche précédente via le tableau de sortie adresses."
+      - name: "streetType"
+        type: "string"
+        in: "query"
+        description: "Type de voie abrégé, élément récupéré lors de l'étape de recherche précédente via le tableau de sortie adresses."
+      - name: "streetSynonym"
+        in: "query"
+        type: "string"
+        description: "Ancienne dénomination de voie, élément récupéré lors de l'étape de recherche précédente via le tableau de sortie adresses."
+      - name: "streetInfo_1"
+        in: "query"
+        type: "string"
+        description: "Mot directeur de la voie (dernier mot), élément récupéré lors de l'étape de recherche précédente via le tableau de sortie adresses."
+      - name: "streetInfo_2"
+        in: "query"
+        type: "string"
+        description: "Reste voie, élément récupéré lors de l'étape de recherche précédente via le tableau de sortie adresses."
+      - name: "streetInfo_5"
+        in: "query"
+        type: "string"
+        description: "Identifiant de la voie (Code HEXACLE VOIE), élément récupéré lors de l'étape de recherche précédente via le tableau de sortie adresses."
+      - name: "streetNumber"
+        in: "query"
+        type: "string"
+        description: "Numéro de voie, élément récupéré lors de l'étape de recherche précédente via le tableau de sortie adresses."
+      - name: "streetNumberId"
+        in: "query"
+        type: "string"
+        description: "Identifiant du numéro de voie (Code HEXACLE), élément récupéré lors de l'étape de recherche précédente via le tableau de sortie adresses."
+      - name: "streetNumberExt"
+        in: "query"
+        type: "string"
+        description: "Complément du numéro, élément récupéré lors de l'étape de recherche précédente via le tableau de sortie adresses."
+      - name: "buildingId"
+        in: "query"
+        type: "string"
+        description: "Identifiant du bâtiment (Code HEXALIGNE3), élément récupéré lors de l'étape de recherche précédente via le tableau de sortie adresses."
+      - name: "buildingName"
+        in: "query"
+        type: "string"
+        description: "Libellé du complément d'adresse, élément récupéré lors de l'étape de recherche précédente via le tableau de sortie adresses."
+      - name: "buildingInfo_1"
+        type: "string"
+        in: "query"
+        description: "Informations additionnelles du bâtiment, élément récupéré lors de l'étape de recherche précédente via le tableau de sortie adresses."
+      - name: "companyId"
+        type: "string"
+        in: "query"
+        description: "Numéro de dossier cedexa, élément récupéré lors de l'étape de recherche précédente via le tableau de sortie adresses."
+      - name: "company"
+        type: "string"
+        in: "query"
+        description: "Nom de la société, élément récupéré lors de l'étape de recherche précédente via le tableau de sortie adresses."
+      - name: "companyInfo_1"
+        type: "string"
+        in: "query"
+        description: "Ligne 2 société, élément récupéré lors de l'étape de recherche précédente via le tableau de sortie adresses."
+      - name: "companyInfo_2"
+        type: "string"
+        in: "query"
+        description: "Boite Postale, élément récupéré lors de l'étape de recherche précédente via le tableau de sortie adresses."
+      - name: "additionalInfo_7"
+        type: "string"
+        in: "query"
+        description: "Ligne 5 postale, élément récupéré lors de l'étape de recherche précédente via le tableau de sortie adresses."
+      responses:
+        200:
+          description: "Succès"
+          schema:
+              $ref: "#/definitions/SearchAddressResponse"
+  /SearchLine:
+    get:
+      summary: "Aide à la saisie d'adresses en temps réel"
+      description: "Chaque caractère saisi engendre un appel à la fonction « SearchLine » avec la variable « step » initialisée à l'étape correspondante à la recherche."
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "request"
+        in: "query"
+        required: true
+        type: "string"
+        enum:
+          - "SearchLine"
+        default: "SearchLine"
+      - name: "inputOutput"
+        in: "query"
+        type: "string"
+        description : "Chaîne de caractères saisie par l'utilisateur."
+      - name: "step"
+        in: "query"
+        type: "string"
+        required: true
+        description : "L'étape correspondante à la recherche."
+        enum:
+          - "Undefined"
+          - "SearchLocality"
+          - "SearchStreet"
+          - "SearchStreetNumber"
+          -  "CheckStreetNumber"
+          - "SearchBuilding"
+          - "SearchLocalityB2B"
+          - "SearchLocalityID"
+          - "SearchCompany"
+          - "SearchNumberRange"
+          - "SearchAdditionalInfo"
+          - "CheckChangeOfAddress"
+          - "ValidateForm"
+          - "FinalAddress"
+          - "Forced"
+          - "SearchLocalitySynonym"
+      - name: "countryCode"
+        in: "query"
+        required: true
+        type: "string"
+        default: "FRA"
+        description : "Chaîne de caractères représentant le code ISO 3166-1 alpha-3 sur trois caractères du pays pour lequel faire la recherche."
+      - name: "languageCode"
+        in: "query"
+        required: true
+        type: "string"
+        default: "fr"
+        description : "Chaîne de caractères représentant le code ISO 639-1 identifiant la langue dans laquelle renvoyer les propositions."
+      - name: "qualityCode"
+        type: "string"
+        in: "query"
+        description: "Code qualité adresse, élément récupéré lors de l'étape de recherche précédente via le tableau de sortie adresses."
+      - name: "localitySynonym"
+        in: "query"
+        type: "string"
+        description: "Lieu dit postal ou INSEE, élément récupéré lors de l'étape de recherche précédente via le tableau de sortie adresses."
+      - name: "localityId"
+        in: "query"
+        type: "string"
+        description: "Identifiant de localité (Code INSEE), élément récupéré lors de l'étape de recherche précédente via le tableau de sortie adresses."
+      - name: "locality"
+        in: "query"
+        type: "string"
+        description: "Localité, élément récupéré lors de l'étape de recherche précédente via le tableau de sortie adresses."
+      - name: "postalCode"
+        in: "query"
+        type: "string"
+        description: "Code Postal, élément récupéré lors de l'étape de recherche précédente via le tableau de sortie adresses."
+      - name: "localityFlags"
+        in: "query"
+        type: "integer"
+        format: "int32"
+        description: "Type de couple Code Postal Localité, élément récupéré lors de l'étape de recherche précédente via le tableau de sortie adresses."
+      - name: "streetId"
+        type: "string"
+        in: "query"
+        description: "Identifiant de voie (Matricule HEXAVIA), élément récupéré lors de l'étape de recherche précédente via le tableau de sortie adresses."
+      - name: "streetName"
+        in: "query"
+        type: "string"
+        description: "Ligne 4 postale (voie), élément récupéré lors de l'étape de recherche précédente via le tableau de sortie adresses."
+      - name: "streetFlags"
+        in: "query"
+        type: "integer"
+        format: "int32"
+        description: "Type de synonyme de voie, élément récupéré lors de l'étape de recherche précédente via le tableau de sortie adresses."
+      - name: "streetType"
+        type: "string"
+        in: "query"
+        description: "Type de voie abrégé, élément récupéré lors de l'étape de recherche précédente via le tableau de sortie adresses."
+      - name: "streetSynonym"
+        in: "query"
+        type: "string"
+        description: "Ancienne dénomination de voie, élément récupéré lors de l'étape de recherche précédente via le tableau de sortie adresses."
+      - name: "streetInfo_1"
+        in: "query"
+        type: "string"
+        description: "Mot directeur de la voie (dernier mot), élément récupéré lors de l'étape de recherche précédente via le tableau de sortie adresses."
+      - name: "streetInfo_2"
+        in: "query"
+        type: "string"
+        description: "Reste voie, élément récupéré lors de l'étape de recherche précédente via le tableau de sortie adresses."
+      - name: "streetInfo_5"
+        in: "query"
+        type: "string"
+        description: "Identifiant de la voie (Code HEXACLE VOIE), élément récupéré lors de l'étape de recherche précédente via le tableau de sortie adresses."
+      - name: "streetNumber"
+        in: "query"
+        type: "string"
+        description: "Numéro de voie, élément récupéré lors de l'étape de recherche précédente via le tableau de sortie adresses."
+      - name: "streetNumberId"
+        in: "query"
+        type: "string"
+        description: "Identifiant du numéro de voie (Code HEXACLE), élément récupéré lors de l'étape de recherche précédente via le tableau de sortie adresses."
+      - name: "streetNumberExt"
+        in: "query"
+        type: "string"
+        description: "Complément du numéro, élément récupéré lors de l'étape de recherche précédente via le tableau de sortie adresses."
+      - name: "buildingId"
+        in: "query"
+        type: "string"
+        description: "Identifiant du bâtiment (Code HEXALIGNE3), élément récupéré lors de l'étape de recherche précédente via le tableau de sortie adresses."
+      - name: "buildingName"
+        in: "query"
+        type: "string"
+        description: "Libellé du complément d'adresse, élément récupéré lors de l'étape de recherche précédente via le tableau de sortie adresses."
+      - name: "buildingInfo_1"
+        type: "string"
+        in: "query"
+        description: "Informations additionnelles du bâtiment, élément récupéré lors de l'étape de recherche précédente via le tableau de sortie adresses."
+      - name: "companyId"
+        type: "string"
+        in: "query"
+        description: "Numéro de dossier cedexa, élément récupéré lors de l'étape de recherche précédente via le tableau de sortie adresses."
+      - name: "company"
+        type: "string"
+        in: "query"
+        description: "Nom de la société, élément récupéré lors de l'étape de recherche précédente via le tableau de sortie adresses."
+      - name: "companyInfo_1"
+        type: "string"
+        in: "query"
+        description: "Ligne 2 société, élément récupéré lors de l'étape de recherche précédente via le tableau de sortie adresses."
+      - name: "companyInfo_2"
+        type: "string"
+        in: "query"
+        description: "Boite Postale, élément récupéré lors de l'étape de recherche précédente via le tableau de sortie adresses."
+      - name: "additionalInfo_7"
+        type: "string"
+        in: "query"
+        description: "Ligne 5 postale, élément récupéré lors de l'étape de recherche précédente via le tableau de sortie adresses."
+      responses:
+        200:
+          description: "Succès"
+          schema:
+              $ref: "#/definitions/SearchLineResponse"
+
+  /VerifyAddress:
+    get:
+      summary: "Vérification de l'adresse après validation"
+      description: "La vérification d'une adresse s'effectue lors de la validation du formulaire. Le service web renvoie deux codes qualités permettant d'identifier le niveau de fiabilité de l'adresse vérifiée. Pour vérifier une adresse, il faut appeler la fonction « VerifyAddress » avec, en paramètre d'entrée, un élément input."
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "request"
+          in: "query"
+          required: true
+          type: "string"
+          enum:
+            - "VerifyAddress"
+          default: "VerifyAddress"
+        - name: "countryCode"
+          in: "query"
+          required: true
+          type: "string"
+          default: "FRA"
+          description : "Chaîne de caractères représentant le code ISO 3166-1 alpha-3 sur trois caractères du pays pour lequel faire la recherche."
+        - name: "languageCode"
+          in: "query"
+          required: true
+          type: "string"
+          default: "fr"
+          description : "Chaîne de caractères représentant le code ISO 639-1 identifiant la langue dans laquelle renvoyer les propositions."
+        - name: "step"
+          in: "query"
+          type: "string"
+          default: ""
+          enum:
+            - ""
+            - "VallidateForm"
+        - name: "localitySynonym"
+          in: "query"
+          type: "string"
+          description: "Lieu dit postal ou INSEE."
+        - name: "locality"
+          in: "query"
+          type: "string"
+          description: "Localité."
+        - name: "postalCode"
+          in: "query"
+          type: "string"
+          description: "Code Postal."
+        - name: "streetName"
+          in: "query"
+          type: "string"
+          description: "Ligne 4 postale (voie)."
+        - name: "streetNumber"
+          in: "query"
+          type: "string"
+          description: "Numéro de voie."
+        - name: "streetNumberExt"
+          in: "query"
+          type: "string"
+          description: "Complément du numéro."
+        - name: "buildingName"
+          in: "query"
+          type: "string"
+          description: "Libellé du complément d'adresse (Complément d'adresse 1)."
+        - name: "buildingInfo1"
+          type: "string"
+          in: "query"
+          description: "Informations additionnelles du bâtiment (Complément d'adresse 2)."
+      responses:
+        200:
+          description: "Succès"
+          schema:
+              $ref: "#/definitions/VerifyAddressResponse"
+
+  /GetMessage:
+    get:
+      summary: "Gestion des messages"
+      description: "La fonction « GetMessage » doit être appelée après chacune des étapes décrites dans ce document si ces dernières renvoient une valeur différente de 0."
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "request"
+          in: "query"
+          required: true
+          type: "string"
+          enum:
+            - "GetMessage"
+          default: "GetMessage"
+        - name: "messageCode"
+          in: "query"
+          required: true
+          type: "string"
+          description : "Valeur retournée par la fonction appelée précédemment."
+        - name: "languageCode"
+          in: "query"
+          required: true
+          type: "string"
+          default: "fr"
+          description : "Chaîne de caractères représentant le code ISO 639-1 identifiant la langue dans laquelle renvoyer les messages."
+      responses:
+        200:
+          description: "Succès"
+          schema:
+            type: "object"
+            properties:
+              response:
+                type: "string"
+                xml:
+                  name: "response"
+              returnValue:
+                type: "integer"
+                format: "int32"
+                description: "Un entier correspondant au code de retour du traitement."
+                xml:
+                  name: "returnValue"
+              message:
+                type: "string"
+                description: "Chaîne de caractères contenant le message retourné."
+                xml:
+                  name: "message"
+
+definitions:
+  SearchAddressResponse:
+    type: "object"
+    properties:
+      response:
+        type: "string"
+        xml:
+          name: "response"
+      returnValue:
+        type: "integer"
+        format: "int32"
+        description: "Un entier correspondant au code de retour du traitement."
+        xml:
+          name: "returnValue"
+      addresses:
+        description: "Un tableau d'objets « address » contenant la ou les propositions."
+        type: "object"
+        properties:
+          address:
+            type: "array"
+            items:
+              $ref: "#/definitions/address"
+
+  VerifyAddressResponse:
+    type: "object"
+    properties:
+      response:
+        type: "string"
+        xml:
+          name: "response"
+      returnValue:
+        type: "integer"
+        format: "int32"
+        description: "Un entier correspondant au code de retour du traitement"
+        xml:
+          name: "returnValue"
+      addresses:
+        description: "Un tableau d'objets « address » contenant la ou les propositions."
+        type: "object"
+        properties:
+          address:
+            type: "array"
+            items:
+              $ref: "#/definitions/address"
+
+  SearchLineResponse:
+    type: "object"
+    properties:
+      response:
+        type: "string"
+        xml:
+          name: "response"
+      returnValue:
+        type: "integer"
+        format: "int32"
+        description: "Un entier correspondant au code de retour du traitement"
+        xml:
+          name: "returnValue"
+      addresses:
+        description: "Un tableau d'objets « address » contenant la ou les propositions."
+        type: "object"
+        properties:
+          address:
+            type: "array"
+            items:
+              $ref: "#/definitions/address"
+
+  address:
+    type: "object"
+    properties:
+      inputOutput:
+        type: "string"
+        description: "Chaine à afficher à l'utilisateur."
+      step:
+        type: "string"
+        description: "Etape suivante de la recherche."
+      countryCode:
+        type: "string"
+        description: "Code pays."
+      languageCode:
+        type: "string"
+        description: "Code langue."
+      qualityCode:
+        type: "string"
+        description: "Code qualité adresse."
+      extendedQualityCode:
+        type: "string"
+        description: "Code Qualité Adresse étendu."
+      localityId:
+        type: "string"
+        description: "Identifiant de localité (Code INSEE)."
+      postalCode:
+        type: "string"
+        description: "Code Postal."
+      locality:
+        type: "string"
+        description: "Localité."
+      localitySynonym:
+        type: "string"
+        description: "Lieu dit postal ou INSEE."
+      localityFlags:
+        type: "integer"
+        format: "int32"
+        description: "Type de couple Code Postal Localité."
+      localityInfo_1:
+        type: "string"
+        description: "Code postal géographique."
+      localityInfo_2:
+        type: "string"
+        description: "Commune géographique si différent de la localité cedex."
+      localityInfo_3:
+        type: "string"
+        description: "Département."
+      localityInfo_4:
+        type: "string"
+        description: "Région."
+      localityInfo_5:
+        type: "string"
+        description: "Tranche de population suivi du nombre d 'habitants."
+      streetId:
+        type: "string"
+        description: "Identifiant de voie (Matricule HEXAVIA)."
+      streetName:
+        type: "string"
+        description: "Ligne 4 postale (voie)."
+      streetFlags:
+        type: "integer"
+        format: "int32"
+        description: "Type de synonyme de voie."
+      streetType:
+        type: "string"
+        description: "Type de voie."
+      abbreviatedStreetType:
+        type: "string"
+        description: "Type de voie abrégé."
+      streetSynonym:
+        type: "string"
+        description: "Ancienne dénomination de voie."
+      streetInfo_1:
+        type: "string"
+        description: "Mot directeur de la voie (dernier mot)."
+      streetInfo_2:
+        type: "string"
+        description: "Reste voie."
+      streetInfo_3:
+        type: "string"
+        description: "Tournée facteur (si abonnement ROUDIS)."
+      streetInfo_4:
+        type: "string"
+        description: "Index ROUDIS."
+      streetInfo_5:
+        type: "string"
+        description: "Identifiant de la voie (Code HEXACLE VOIE)."
+      streetNumber:
+        type: "string"
+        description: "Numéro de voie."
+      streetNumberId:
+        type: "string"
+        description: "Identifiant du numéro de voie (Code HEXACLE)."
+      streetNumberExt:
+        type: "string"
+        description: "Complément du numéro."
+      streetNumberPosition:
+        type: "integer"
+        enum:
+          - 1
+          - 2
+        description: "Choix du positionement du numéro dans la voie (1: avant, 2: après)."
+      range:
+        type: "string"
+        description: "Borne de voie."
+      rangeType:
+        type: "string"
+        description: "Non utilisé."
+      listStreetNumber:
+        type: "string"
+        description: "Liste des numéros de voie."
+      buildingId:
+        type: "string"
+        description: "Identifiant du bâtiment (Code HEXALIGNE3)."
+      buildingName:
+        type: "string"
+        description: "Libellé du complément d'adresse."
+      buildingInfo_1:
+        type: "string"
+        description: "Informations additionnelles du bâtiment."
+      buildingInfo_2:
+        type: "string"
+        description: "Non utilisé."
+      buildingInfo_3:
+        type: "string"
+        description: "Non utilisé."
+      buildingInfo_4:
+        type: "string"
+        description: "Non utilisé."
+      buildingInfo_5:
+        type: "string"
+        description: "Non utilisé."
+      companyId:
+        type: "string"
+        description: "Numéro de dossier cedexa."
+      company:
+        type: "string"
+        description: "Nom de la société."
+      companyInfo_1:
+        type: "string"
+        description: "Ligne 2 société."
+      companyInfo_2:
+        type: "string"
+        description: "Boite Postale."
+      formattedAddress:
+        type: "string"
+        description: "Adresse formaté."
+      additionalInfo_1:
+        type: "string"
+        description: "Ligne de distribution."
+      additionalInfo_2:
+        type: "string"
+        description: "Ligne d'acheminement."
+      additionalInfo_3:
+        type: "string"
+        description: "Non utilisé."
+      additionalInfo_4:
+        type: "string"
+        description: "Autres numéros de voie."
+      additionalInfo_5:
+        type: "string"
+        description: "Code IRIS."
+      additionalInfo_6:
+        type: "string"
+        description: "CSP."
+      additionalInfo_7:
+        type: "string"
+        description: "Ligne 5 postale."
+      additionalInfo_8:
+        type: "string"
+        description: "Non utilisé."
+      additionalInfo_9:
+        type: "string"
+        description: "Non utilisé."
+      additionalInfo_10:
+        type: "string"
+        description: "Non utilisé."
+      hasMoved:
+        type: "integer"
+        format: "int32"
+        description: "Indicateur déménagé."
+      XYDataBase:
+        type: "integer"
+        format: "int32"
+        description: "Base de géocodage."
+      X:
+        type: "string"
+        description: "Coordonnées X."
+      Y:
+        type: "string"
+        description: "Coordonnées Y."
+      accuracy:
+        type: "integer"
+        format: "int32"
+        description: "Indicateur précision."
+      idCarreau:
+        type: "string"
+        description: "Identifiant du carreau."
+      idInspire:
+        type: "string"
+        description: "Code du carreau (= identifiant INSPIRE)."
+      idK:
+        type: "string"
+        description: "Code du rectangle associé."
+    xml:
+      name: "address"

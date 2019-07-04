@@ -1,0 +1,209 @@
+swagger: "2.0"
+info:
+  title: "CAP E-MAIL"
+  description: "CAP E-MAIL est un service web d'aide à la saisie et de vérification d'adresses e-mail."
+  version: "1.0.0"
+  contact:
+    email: "support@capadresse.com"
+host: "dev.capadresse.com"
+schemes:
+  - "http"
+  - "https"
+paths:
+  /SearchMailCivWS:
+    get:
+      summary: "Aide à la saisie d'adresses emails"
+      description: "Permet d'afficher des propositions à l'utilisateur (à partir de la civilité qu'il a renseignée et d'une base de données contenant plus de 25000 noms de domaine), tout en lui indiquant si l'adresse saisie contient des erreurs de syntaxe."
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "request"
+        in: "query"
+        required: true
+        type: "string"
+        enum:
+          - "SearchMailCivWS"
+        default: "SearchMailCivWS"
+      - name: "sInput"
+        in: "query"
+        type: "string"
+        description: "La saisie en cours de l'adresse email."
+      - name: "sNom"
+        in: "query"
+        type: "string"
+        description: "Nom saisi (peut être vide)."
+      - name: "sPrenom"
+        in: "query"
+        type: "string"
+        description: "Prénom saisi (peut être vide)."
+      - name: "sPays"
+        in: "query"
+        type: "string"
+        description: "Code ISO 3166-1 alpha-3 du pays pour lequel proposer les noms de domaine."
+      - name: "sLangue"
+        in: "query"
+        type: "string"
+        description: "Code ISO 639-1 de la langue dans laquelle seront affichés les messages (si omis, les messages seront affichés en français)."
+      responses:
+        200:
+          description: "Succès"
+          schema:
+            $ref: "#/definitions/SearchMailCivWSResponse"
+
+  /CheckMailSrvWS :
+    get:
+      summary: "Validation de l'adresse email (sans proposition)"
+      description: "Permet de tester la syntaxe de l'adresse email et de se connecter au serveur d'email (nom de domaine) afin de valider son existence sur le réseau."
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "request"
+        in: "query"
+        required: true
+        type: "string"
+        enum:
+          - "CheckMailSrvWS"
+        default: "CheckMailSrvWS"
+      - name: "sMail"
+        in: "query"
+        type: "string"
+        description: "L'adresse e-mail à tester."
+      - name: "sLangue"
+        in: "query"
+        type: "string"
+        description: "Code ISO 639-1 de la langue dans laquelle seront affichés les messages (si omis, les messages seront affichés en français)."
+      responses:
+        200:
+          description: "Succès"
+          schema:
+            $ref: "#/definitions/CheckMailSrvWSResponse"
+
+  /CheckMailProp :
+    get:
+      summary: "Validation de l'adresse email (avec proposition)"
+      description: "Fonction alternative à CheckMailSrvWS, permet de tester la syntaxe de l'adresse email et de se connecter au serveur d'email (nom de domaine) afin de valider son existence sur le réseau."
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "request"
+        in: "query"
+        required: true
+        type: "string"
+        enum:
+          - "CheckMailProp"
+        default: "CheckMailProp"
+      - name: "sMail"
+        in: "query"
+        type: "string"
+        description: "L'adresse e-mail à tester."
+      - name: "sLangue"
+        in: "query"
+        type: "string"
+        description: "Code ISO 639-1 de la langue dans laquelle seront affichés les messages (si omis, les messages seront affichés en français)."
+      responses:
+        200:
+          description: "Succès"
+          schema:
+            $ref: "#/definitions/CheckMailPropResponse"
+
+
+definitions:
+  SearchMailCivWSResponse:
+    type: "object"
+    properties:
+      response:
+        type: "string"
+        description: "Le nom de la requête appelée."
+        xml:
+          name: "response"
+      iRet:
+        type: "integer"
+        format: "int32"
+        description: "Un entier décrivant le résultat du traitement."
+        xml:
+          name: "iRet"
+      Mail:
+        type: "array"
+        description: "Un tableau d'objets contenant la ou les propositions à afficher à l'utilisateur."
+        xml:
+          name: "Mail"
+          wrapped: true
+        items:
+          $ref: "#/definitions/Mail"
+      sMessage:
+        type: "string"
+        description: "Une chaîne de caractères contenant le message à afficher à l'utilisateur ou l'erreur rencontrée."
+        xml:
+          name: "sMessage"
+
+  CheckMailSrvWSResponse:
+    type: "object"
+    properties:
+      response:
+        type: "string"
+        description: "Le nom de la requête appelée."
+        xml:
+          name: "response"
+      iRet:
+        type: "integer"
+        format: "int32"
+        description: "Un entier décrivant le résultat du traitement."
+        xml:
+          name: "iRet"
+      sMessage:
+        type: "string"
+        description: "Une chaîne de caractères contenant le message à afficher à l'utilisateur ou l'erreur rencontrée."
+        xml:
+          name: "sMessage"
+      sCodeTraitement:
+        type: "string"
+        description: "Un code traitement sur cinq caractères, précisant les actions effectuées sur l'adresse email."
+        xml:
+         name: "sCodeTraitement"
+
+  CheckMailPropResponse:
+    type: "object"
+    properties:
+      response:
+        type: "string"
+        description: "Le nom de la requête appelée."
+        xml:
+          name: "response"
+      iRet:
+        type: "integer"
+        format: "int32"
+        description: "Un entier décrivant le résultat du traitement."
+        xml:
+          name: "iRet"
+      sMessage:
+        type: "string"
+        description: "Une chaîne de caractères contenant le message à afficher à l'utilisateur ou l'erreur rencontrée."
+        xml:
+          name: "sMessage"
+      sCodeTraitement:
+        type: "string"
+        description: "Un code traitement sur cinq caractères, précisant les actions effectuées sur l'adresse email."
+        xml:
+         name: "sCodeTraitement"
+      Mail:
+        type: "array"
+        description: "Un tableau d'objets contenant la ou les propositions à afficher à l'utilisateur."
+        xml:
+          name: "Mail"
+          wrapped: true
+        items:
+          $ref: "#/definitions/Mail"
+
+  Mail:
+    type: "object"
+    properties:
+      sMail:
+        type: "string"
+    xml:
+      name: "Mail"

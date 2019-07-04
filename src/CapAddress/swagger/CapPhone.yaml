@@ -1,0 +1,569 @@
+swagger: "2.0"
+info:
+  title: "CAP PHONE"
+  description: "Cap Phone va permettre d’assister l’utilisateur lors de la validation d’un numéro de téléphone et s’assurer de la conformité syntaxique de ce dernier avant de le stocker en base de données. Le but étant de s’assurer que chaque numéro de téléphone entré en base de données est syntaxiquement correct et stocké dans un même format. "
+  version: "1.0.0"
+  contact:
+    email: "support@capadresse.com"
+host: "dev.capadresse.com"
+schemes:
+  - "http"
+  - "https"
+paths:
+  /SearchPhone:
+    get:
+      summary: "Permet de valider la syntaxe d'un numéro de téléphone d'un pays."
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "request"
+        in: "query"
+        required: true
+        type: "string"
+        enum:
+          - "SearchPhone"
+        default: "SearchPhone"
+      - name: "sTel"
+        in: "query"
+        type: "string"
+        description : " Chaîne de caractères représentant le numéro de téléphone à valider."
+      - name: "sIsoPays"
+        in: "query"
+        type: "string"
+        required: true
+        description: "Chaîne de caractères représentant le code ISO3 du pays. (voir annexe pour la liste des codes pays)."
+      - name: "sCaractereSep"
+        in: "query"
+        required: true
+        type: "string"
+        description : "Caractère représentant le séparateur à inclure entre les chiffres du numéro de téléphone."
+      - name: "iFormat"
+        in: "query"
+        required: true
+        type: "integer"
+        format: "int32"
+        enum:
+          - 0
+          - 1
+        description : " Entier représentant le type de format à afficher."
+      - name: "iTypeSearch"
+        in: "query"
+        required: true
+        type: "integer"
+        format: "int32"
+        enum:
+          - 0
+          - 1
+        description : "Entier représentant le type de recherche."
+      responses:
+        200:
+          description: "Succès"
+          schema:
+              $ref: "#/definitions/SearchPhoneResponse"
+  /ValidatePhoneMob:
+    get:
+      summary: "Permet de valider l'existence d'un numéro de téléphone mobile français."
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "request"
+        in: "query"
+        required: true
+        type: "string"
+        enum:
+          - "ValidatePhoneMob"
+        default: "ValidatePhoneMob"
+      - name: "sTel"
+        in: "query"
+        type: "string"
+        description : " Chaîne de caractères représentant le numéro de téléphone à valider."
+      - name: "sIsoPays"
+        in: "query"
+        type: "string"
+        required: true
+        description: "Chaîne de caractères représentant le code ISO3 du pays."
+      - name: "sIndiceInt"
+        in: "query"
+        required: true
+        type: "string"
+        description : "Chaîne de caractères représentant l'indice téléphonique national."
+      - name: "sIndicatifOut"
+        in: "query"
+        required: true
+        type: "string"
+        description : "Chaîne de caractères représentant l'indicatif international."
+      - name: "iFormat"
+        in: "query"
+        required: true
+        type: "integer"
+        format: "int32"
+        enum:
+          - 0
+          - 1
+        description : "Entier représentant le type de format à afficher. 1 pour format international, ou 0 pour format national."
+      - name: "sCodeRetour"
+        in: "query"
+        required: true
+        type: "string"
+        description : "Code retour résultant de la fonction SearchPhone."
+      responses:
+        200:
+          description: "Succès"
+          schema:
+              $ref: "#/definitions/ValidatePhoneMobResponse"
+  /CheckPhoneBook:
+    get:
+      summary: "Permet d’obtenir les informations du propriétaire du numéro de téléphone."
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "request"
+        in: "query"
+        required: true
+        type: "string"
+        enum:
+          - "CheckPhoneBook"
+        default: "CheckPhoneBook"
+      - name: "sTel"
+        in: "query"
+        type: "string"
+        description : " Chaîne de caractères représentant le numéro de téléphone à rechercher."
+      - name: "sL1"
+        in: "query"
+        type: "string"
+        description: "Nom individu ou raison sociale si société."
+      - name: "sL2"
+        in: "query"
+        type: "string"
+        description: "Complément d'adresse 1."
+      - name: "sL3"
+        in: "query"
+        type: "string"
+        description: "Complément d'adresse 2."
+      - name: "sL4"
+        in: "query"
+        type: "string"
+        description: "Voie."
+      - name: "sL5"
+        in: "query"
+        type: "string"
+        description: "Lieu dit."
+      - name: "sL6"
+        in: "query"
+        type: "string"
+        description: "Code postal et localité."
+      - name: "sCp"
+        in: "query"
+        type: "string"
+        description: "Code postal de l'adresse."
+      - name: "sLoc"
+        in: "query"
+        type: "string"
+        description: "Localité de l'adresse."
+      responses:
+        200:
+          description: "Succès"
+          schema:
+              $ref: "#/definitions/CheckPhoneBookResponse"
+  /GetInfoMobile:
+    get:
+      summary: "Permet de rechercher des informations concernant un numéro de téléphone."
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "request"
+        in: "query"
+        required: true
+        type: "string"
+        enum:
+          - "GetInfoMobile"
+        default: "GetInfoMobile"
+      - name: "sTel"
+        in: "query"
+        type: "string"
+        description : " Chaîne de caractères représentant le numéro de téléphone à rechercher."
+      - name: "sIndicatifOut"
+        in: "query"
+        type: "string"
+        description: "Chaîne de caractères représentant l'indicatif international."
+      - name: "sIsoPays"
+        in: "query"
+        type: "string"
+        required: true
+        description: "Chaîne de caractères représentant le code ISO3 du pays. (voir annexe pour la liste des codes pays)."
+      - name: "sIndiceInt"
+        in: "query"
+        type: "string"
+        description: "Chaîne de caractères représentant l'indice téléphonique national."
+      - name: "iFormat"
+        in: "query"
+        type: "string"
+        description: "Entier représentant le type de format à afficher. 1 pour format international, ou 0 pour format nationa."
+      - name: "sCodeRetour"
+        in: "query"
+        type: "string"
+        description: "Code retour résultant de la fonction SearchPhone."
+      responses:
+        200:
+          description: "Succès"
+          schema:
+              $ref: "#/definitions/GetInfoMobResponse"
+  /GetMessageCP:
+    get:
+      summary: "Gestion des messages"
+      description: "La fonction « GetMessageCP » doit être appelée après chacune des étapes décrites dans ce document si ces dernières renvoient une valeur différente de 0."
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "request"
+          in: "query"
+          required: true
+          type: "string"
+          enum:
+            - "GetMessageCP"
+          default: "GetMessageCP"
+        - name: "sCodePaysIso3"
+          in: "query"
+          required: true
+          default: "FRA"
+          type: "string"
+          description : " Code Iso 3 de la langue de message (défaut: FRA)."
+        - name: "iReturnValue"
+          in: "query"
+          required: true
+          type: "integer"
+          format: "int32"
+          description : "Chaîne de caractères représentant le code ISO 639-1 identifiant la langue dans laquelle renvoyer les messages."
+      responses:
+        200:
+          description: "Succès"
+          schema:
+            type: "object"
+            properties:
+              response:
+                type: "string"
+                xml:
+                  name: "response"
+              iRet:
+                type: "integer"
+                format: "int32"
+                description: "Un entier correspondant au code de retour du traitement."
+                xml:
+                  name: "iRet"
+              sMessage:
+                type: "string"
+                description: "Chaîne de caractères contenant le message retourné."
+                xml:
+                  name: "sMessage"
+
+definitions:
+  SearchPhoneResponse:
+    type: "object"
+    properties:
+      response:
+        type: "string"
+        xml:
+          name: "response"
+      returnValue:
+        type: "integer"
+        format: "int32"
+        description: "Un entier correspondant au code de retour du traitement."
+        xml:
+          name: "returnValue"
+      phone:
+        description: "Un tableau contenant la ou les propositions."
+        type: "object"
+        items:
+            $ref: "#/definitions/phone"
+  ValidatePhoneMobResponse:
+    type: "object"
+    properties:
+      response:
+        type: "string"
+        xml:
+          name: "response"
+      returnValue:
+        type: "integer"
+        format: "int32"
+        description: "Un entier correspondant au code de retour du traitement."
+        xml:
+          name: "returnValue"
+      validphone:
+        description: "Une structure contenant la réponse."
+        type: "object"
+        items:
+          $ref: "#/definitions/validphone"
+  CheckPhoneBookResponse:
+    type: "object"
+    properties:
+      response:
+        type: "string"
+        xml:
+          name: "response"
+      iReturnValue:
+        type: "integer"
+        format: "int32"
+        description: "Un entier correspondant au code de retour du traitement."
+        xml:
+          name: "iReturnValue"
+      phonebook:
+        description: "Une structure contenant la réponse."
+        type: "object"
+        items:
+          $ref: "#/definitions/phonebook"
+  GetInfoMobResponse:
+    type: "object"
+    properties:
+      response:
+        type: "string"
+        xml:
+          name: "response"
+      iReturnValue:
+        type: "integer"
+        format: "int32"
+        description: "Un entier correspondant au code de retour du traitement."
+        xml:
+          name: "iReturnValue"
+      infoMob:
+        description: "Une structure contenant la réponse."
+        type: "object"
+        items:
+          $ref: "#/definitions/infoMob"
+  phone:
+    type: "object"
+    properties:
+      sTel:
+        type: "string"
+        description: "Numéro de téléphone."
+      sIndiceInt:
+        type: "string"
+        description: "Indice national."
+      sPays:
+        type: "string"
+        description: "Pays."
+      sIsoPays:
+        type: "string"
+        description: "Code Iso3 du pays."
+      sIndicatifOut:
+        type: "string"
+        description: "Indicatif international."
+      sCodeRet:
+        type: "string"
+        description: "Code Retour."
+    xml:
+      name: "phone"
+  validphone:
+    type: "object"
+    properties:
+      iCountryCodeMCC:
+        type: "integer"
+        format: "int32"
+        description: "Code Pays sur le réseau MCC."
+      sNetWorkCodeMNC:
+        type: "string"
+        description: "Code du réseau MNC."
+      sNetWorkCountry:
+        type: "string"
+        description: "Pays."
+      sNetWorkName:
+        type: "string"
+        description: "Nom de l'opérateur."
+      ilsConnected:
+        type: "integer"
+        format: "int32"
+        description: "Indicatif international."
+      sCodeRetour:
+        type: "string"
+        description: "Code Retour."
+    xml:
+      name: "validphone"
+  phonebook:
+    type: "object"
+    properties:
+      sType:
+        type: "string"
+        description: "INV: recherche de type inversé, par numéro TELADR: recherche par nom et adresse."
+      sScore:
+        type: "string"
+        description: "Score de vraisemblance du résultat (de 100=exact à 50=faible)."
+      sTel:
+        type: "string"
+        description: "numéro de téléphone."
+      sSociete:
+        type: "string"
+        description: "Raison sociale si société."
+      sPrenom:
+        type: "string"
+        description: "Prénom si individu."
+      sNom:
+        type: "string"
+        description: "Nom de famille si individu."
+      sL1:
+        type: "string"
+        description: "Nom individu ou raison sociale si société."
+      sL2:
+        type: "string"
+        description: "Complément d'adresse 1."
+      sL3:
+        type: "string"
+        description: "Complément d'adresse 2."
+      sL4:
+        type: "string"
+        description: "Voie."
+      sL5:
+        type: "string"
+        description: "Lieu dit."
+      sL6:
+        type: "string"
+        description: "Code postal et localité."
+      sCp:
+        type: "string"
+        description: "Code postal de l’adresse."
+      sLoc:
+        type: "string"
+        description: "Localité de l’adresse."
+      sTypeterminal:
+        type: "string"
+        description: "TF: téléphone TC: fax CT: cabine téléphonique."
+      sAntiprospect:
+        type: "string"
+        description: "O pour opposition au marketing téléphonique (liste orange)."
+      sStopinv:
+        type: "string"
+        description: "O pour opposition à la recherche inversée."
+      sChamois:
+        type: "string"
+        description: "O pour opposition à la parution annuaire papier mais pas au renseignement téléphonique."
+    xml:
+      name: "phonebook"
+  infoMob:
+    type: "object"
+    properties:
+      sNumero:
+        type: "string"
+        description: "Le numéro du mobile testé."
+      sCountryCodeMCC:
+        type: "string"
+        description: "Code du pays du réseau courant."
+      sNetWorkCodeMNC:
+        type: "string"
+        description: "Code du réseau."
+      sIMSI:
+        type: "string"
+        description: "International Mobile Subscriber Identity, utilisé pour identifier de façon unique l’utilisateur d’un réseau mobile."
+      sServingMSC:
+        type: "string"
+        description: "Serving mobile switching center."
+      originalNetwork:
+        type: "array"
+        items:
+             $ref: "#/definitions/Network"
+        description: "Informations sur l’opérateur d’origine du mobile."
+      isPorted:
+        type: "integer"
+        format: "int32"
+        description: "Changement d’opérateur. 1 : Oui, 0 : Non."
+      portedNetwork:
+        type: "array"
+        items:
+             $ref: "#/definitions/Network"
+        description: "Informations sur le nouvel opérateur."
+      isRoaming:
+        type: "integer"
+        format: "int32"
+        description: "En déplacement à l’étranger. 1 : Oui, 0 : Non."
+      roamingNetwork:
+        type: "array"
+        items:
+             $ref: "#/definitions/Network"
+        description: "Réseau utilisé à l’étranger."
+      status:
+        type: "array"
+        items:
+             $ref: "#/definitions/Status"
+        description: "Informations sur l’état de la requête."
+      error:
+        type: "array"
+        items:
+             $ref: "#/definitions/Error"
+        description: "Informations sur l’état de la requête."
+    xml:
+      name: "infoMob"
+  Network:
+    type: "object"
+    properties:
+      sCountryName:
+        type: "string"
+        description: "Nom du pays."
+      sCountryPrefix:
+        type: "string"
+        description: "Préfixe du pays."
+      sNetWorkName:
+        type: "string"
+        description: "Nom de l’opérateur."
+      sNetworkPrefix:
+        type: "string"
+        description: "Préfixe de l’opérateur."
+    xml:
+      name: "Network"
+  Status:
+    type: "object"
+    properties:
+      iGroupId:
+        type: "integer"
+        format: "int32"
+        description: "Identifiant du groupe du statut."
+      sGroupName:
+        type: "string"
+        description: "Nom du groupe du statut."
+      id:
+        type: "integer"
+        format: "int32"
+        description: "Identifiant du statut."
+      sName:
+        type: "string"
+        description: "Nom du statut."
+      sDescription:
+        type: "string"
+        description: "Description du statut."
+      sAction:
+        type: "string"
+        description: "Action à réaliser pour éviter l’erreur."
+    xml:
+      name: "Status"
+  Error:
+    type: "object"
+    properties:
+      iGroupId:
+        type: "integer"
+        format: "int32"
+        description: "Identifiant du groupe de l'erreur."
+      sGroupName:
+        type: "string"
+        description: "Nom du groupe de l'erreur."
+      id:
+        type: "integer"
+        format: "int32"
+        description: "Identifiant de l'erreur."
+      sName:
+        type: "string"
+        description: "Nom de l'erreur."
+      sDescription:
+        type: "string"
+        description: "Description de l'erreur."
+      iPermanent:
+        type: "integer"
+        format: "int32"
+        description: "Indique si l’erreur est pérmanante. 1 : Oui, 0 : Non."
+    xml:
+      name: "Error"
