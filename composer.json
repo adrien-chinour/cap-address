@@ -1,7 +1,6 @@
 {
     "name": "adrien-chinour/cap-address",
     "description": "CapAdress",
-    "version": "0.1.8",
     "type": "library",
     "license": "MIT",
     "homepage": "https://github.com/adrien-chinour/cap-address",
